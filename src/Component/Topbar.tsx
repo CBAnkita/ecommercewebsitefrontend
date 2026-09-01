@@ -7,37 +7,44 @@ import {
     Tooltip,
     Menu,
     MenuItem,
-    Button,
     IconButton,
     Avatar,
-    TextField, Badge
+    TextField,
+    Badge
 } from '@mui/material';
 
 import React from 'react';
 
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 
-import { Search, Settings, ShoppingCart, Person } from '@mui/icons-material';
+import {
+    ShoppingCart,
+    Person
+} from '@mui/icons-material';
 
 import { Link } from 'react-router-dom';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 
 type NavigationPage = {
     link: string;
     menuItem: string;
 };
+
 type settingpage = {
     settingitem: string;
     settinglink: string;
 };
 
+
 function Topbar({
     pages,
     settings
-}: {
+}:
+{
     pages: NavigationPage[];
     settings: settingpage[];
 }) {
+
     const [search, setSearch] = React.useState('');
 
     const [cartCount, setCartCount] = React.useState(0);
@@ -58,13 +65,17 @@ function Topbar({
     };
 
 
-
-
     return (
 
-        <AppBar position='fixed'>
+        <AppBar position="fixed">
 
-            <Container maxWidth="xl">
+            <Container
+                sx={{
+                    maxWidth: '99vw',
+                    p: 0,
+                    m: 0
+                }}
+            >
 
                 <Toolbar disableGutters>
 
@@ -87,7 +98,7 @@ function Topbar({
                     <Typography
                         variant="h6"
                         noWrap
-                        component='a'
+                        component="a"
                         href="#app-bar-with-responsive-menu"
                         sx={{
                             mr: 3,
@@ -107,7 +118,6 @@ function Topbar({
                     </Typography>
 
 
-
                     {/* Navigation Links */}
 
                     <Box
@@ -118,30 +128,29 @@ function Topbar({
                             flexGrow: 1
                         }}
                     >
-                        {
-                            pages.map((item)=>(
-                                    <Link
-                                        to={item.link}
-                                        style={{
-                                            color: 'white',
-                                            textDecoration: 'none'
-                                        }}
-                             >
-                                    {item.menuItem}
-                                </Link>
 
-                            ))
-                        }
-                    
+                        {pages.map((item) => (
+
+                            <Link
+                                key={item.link}
+                                to={item.link}
+                                style={{
+                                    color: 'white',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                {item.menuItem}
+                            </Link>
+
+                        ))}
 
                     </Box>
-
 
 
                     {/* Search */}
 
                     <TextField
-                        type='text'
+                        type="text"
 
                         value={search}
 
@@ -159,6 +168,8 @@ function Topbar({
                             width: '220px'
                         }}
                     />
+
+
                     {/* Cart Icon */}
 
                     <IconButton
@@ -169,12 +180,16 @@ function Topbar({
                             ml: 2
                         }}
                     >
+
                         <Badge
                             badgeContent={cartCount}
                             color="error"
                         >
+
                             <ShoppingCart />
+
                         </Badge>
+
                     </IconButton>
 
 
@@ -197,7 +212,9 @@ function Topbar({
                                     color: 'primary.main'
                                 }}
                             >
+
                                 <Person />
+
                             </Avatar>
 
                         </IconButton>
@@ -205,6 +222,7 @@ function Topbar({
                     </Tooltip>
 
 
+                    {/* User Menu */}
 
                     <Menu
                         sx={{
@@ -228,25 +246,20 @@ function Topbar({
                         onClose={handleCloseUserMenu}
                     >
 
-                        {
-                            settings.map(item=>(
-                                <MenuItem
-                                    component={Link}
-                                    to={item.settinglink}
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    {item.settingitem}
-                                </MenuItem>
-                            ))
-                        }
-                        
+                        {settings.map((item) => (
 
+                            <MenuItem
+                                key={item.settinglink}
+                                component={Link}
+                                to={item.settinglink}
+                                onClick={handleCloseUserMenu}
+                            >
+                                {item.settingitem}
+                            </MenuItem>
 
-                        
+                        ))}
+
                     </Menu>
-
-
-
 
 
                 </Toolbar>
@@ -255,9 +268,9 @@ function Topbar({
 
         </AppBar>
 
-
-
     );
 }
 
-export default Topbar
+
+export default Topbar;
+
