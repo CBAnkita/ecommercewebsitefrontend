@@ -16,6 +16,26 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Topbar from '../Component/Topbar';
+
+
+
+const API_URL = "http://localhost:8080/ecomapp";
+
+const IMAGE_BASE_URL =
+  "http://localhost:8080/ecomapp/images";
+
+
+
+
+interface Product {
+  product_id: number;
+  productName: string;
+  description: string;
+  price: number;
+  stock_quantity: number;
+  image_ids: string | null;
+}
 
 interface Cart {
   id: string;
@@ -26,13 +46,18 @@ interface CartItem {
   id: number;
   quantity: number;
   price_at_add: number;
+  product: Product;
 }
 
-const API_URL = "http://localhost:8080/ecomapp";
+
+// =========================
+// CART PAGE
+// =========================
 
 function CartPage() {
 
-  const [cart, setCart] = useState<Cart | null>(null);
+  const [cart, setCart] =
+    useState<Cart | null>(null);
 
   const [cartItems, setCartItems] =
     useState<CartItem[]>([]);
@@ -41,7 +66,9 @@ function CartPage() {
     useState(true);
 
 
-
+  // =========================
+  // GET USER ID
+  // =========================
 
   const getUserId = () => {
 
@@ -49,6 +76,10 @@ function CartPage() {
 
   };
 
+
+  // =========================
+  // GET CART
+  // =========================
 
   const getCart = async () => {
 
@@ -59,27 +90,47 @@ function CartPage() {
       const token =
         localStorage.getItem("token");
 
+
       if (!userId) {
 
         alert("User ID not found");
 
         return;
+
       }
 
+
       const response = await axios.get(
+
         `${API_URL}/cart/user/${userId}`,
+
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
+
       );
 
-      const cartData = response.data;
+
+      const cartData =
+        response.data;
+
+
+      console.log(
+        "Cart:",
+        cartData
+      );
+
 
       setCart(cartData);
 
-      await getCartItems(cartData.id);
+
+      await getCartItems(
+        cartData.id
+      );
+
 
     } catch (error) {
 
@@ -97,7 +148,9 @@ function CartPage() {
   };
 
 
-  
+  // =========================
+  // GET CART ITEMS
+  // =========================
 
   const getCartItems = async (
     cartId: string
@@ -108,16 +161,32 @@ function CartPage() {
       const token =
         localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${API_URL}/cartitem/cart/${cartId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+
+      const response =
+        await axios.get(
+
+          `${API_URL}/cartitem/cart/${cartId}`,
+
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+
+        );
+
+
+      console.log(
+        "Cart Items:",
+        response.data
       );
 
-      setCartItems(response.data);
+
+      setCartItems(
+        response.data
+      );
+
 
     } catch (error) {
 
@@ -131,7 +200,45 @@ function CartPage() {
   };
 
 
+  // =========================
+  // GET PRODUCT IMAGE
+  // =========================
 
+  const getImageUrl = (
+    image_ids: string | null
+  ) => {
+
+    if (
+      !image_ids ||
+      image_ids.trim() === ""
+    ) {
+
+      return null;
+
+    }
+
+
+    const firstId =
+      image_ids
+        .split(",")[0]
+        .trim();
+
+
+    if (!firstId) {
+
+      return null;
+
+    }
+
+
+    return `${IMAGE_BASE_URL}/${firstId}`;
+
+  };
+
+
+  // =========================
+  // UPDATE QUANTITY
+  // =========================
 
   const updateQuantity = async (
     itemId: number,
@@ -139,32 +246,47 @@ function CartPage() {
   ) => {
 
     if (quantity < 1) {
+
       return;
+
     }
+
 
     try {
 
       const token =
         localStorage.getItem("token");
 
+
       await axios.put(
+
         `${API_URL}/cartitem/${itemId}`,
+
         {
           quantity: quantity,
         },
+
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            Authorization:
+              `Bearer ${token}`,
+
+            "Content-Type":
+              "application/json",
           },
         }
+
       );
+
 
       if (cart) {
 
-        await getCartItems(cart.id);
+        await getCartItems(
+          cart.id
+        );
 
       }
+
 
     } catch (error) {
 
@@ -178,6 +300,9 @@ function CartPage() {
   };
 
 
+  // =========================
+  // DELETE ITEM
+  // =========================
 
   const deleteItem = async (
     itemId: number
@@ -188,20 +313,29 @@ function CartPage() {
       const token =
         localStorage.getItem("token");
 
+
       await axios.delete(
+
         `${API_URL}/cartitem/${itemId}`,
+
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
+
       );
+
 
       if (cart) {
 
-        await getCartItems(cart.id);
+        await getCartItems(
+          cart.id
+        );
 
       }
+
 
     } catch (error) {
 
@@ -215,36 +349,52 @@ function CartPage() {
   };
 
 
+  // =========================
+  // CLEAR CART
+  // =========================
 
   const clearCart = async () => {
 
     if (!cart) {
+
       return;
+
     }
+
 
     if (
       !window.confirm(
         "Are you sure you want to clear cart?"
       )
     ) {
+
       return;
+
     }
+
 
     try {
 
       const token =
         localStorage.getItem("token");
 
+
       await axios.delete(
+
         `${API_URL}/cart/${cart.id}/clear`,
+
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization:
+              `Bearer ${token}`,
           },
         }
+
       );
 
+
       setCartItems([]);
+
 
     } catch (error) {
 
@@ -258,19 +408,29 @@ function CartPage() {
   };
 
 
-
+  // =========================
+  // TOTAL
+  // =========================
 
   const totalAmount =
     cartItems.reduce(
+
       (total, item) =>
+
         total +
-        Number(item.price_at_add) *
+        Number(
+          item.price_at_add
+        ) *
         item.quantity,
+
       0
+
     );
 
 
-
+  // =========================
+  // LOAD CART
+  // =========================
 
   useEffect(() => {
 
@@ -279,23 +439,83 @@ function CartPage() {
   }, []);
 
 
-
+  // =========================
+  // LOADING
+  // =========================
 
   if (loading) {
 
     return (
+
       <Container sx={{ mt: 5 }}>
 
         <Typography>
+
           Loading cart...
+
         </Typography>
 
       </Container>
+
     );
 
   }
+   const pages1 = [
+            {
+                menuItem:'Product',
+                link:'/products'
+            },
+            {
+                menuItem:'Categories',
+                link:'/Categories'
+            },
+            
+            
+            {
+                menuItem:'ContactUs',
+                link:'/ContactUs'
+            },
+            
+            ];
+
+
+
+    const settings1 = [
+            {
+                settingitem:'Profile',
+                settinglink:'/profile'
+
+            }, 
+            {
+                settingitem:'Account',
+                settinglink:'/Account'
+            }, 
+            {
+                settingitem:'Dashboard',
+                settinglink:'/Dashboard'
+                
+            }
+            , 
+            {
+                settingitem:'Logout',
+                settinglink:'/Logout'
+                
+            }
+            ];
+
+
+
+
+  // =========================
+  // UI
+  // =========================
 
   return (
+     <>
+    <Topbar
+      pages={pages1}
+      settings={settings1}
+    />
 
     <Box
       sx={{
@@ -305,31 +525,39 @@ function CartPage() {
       }}
     >
 
-      <Container sx={{maxWidth:'lg'}}>
+      <Container maxWidth="lg">
 
-        {/* HEADER */}
+
+        {/* ================= HEADER ================= */}
 
         <Box
-        sx={{display:'flex',justifyContent:'space-around',alignItems:'center',mb:'3'}}
-           
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
         >
 
           <Box
-          sx={{   display:'flex',
-            alignItems:'center',
-            gap:'1'}}
-           >
-           
-            <ShoppingCartIcon
-              sx={{fieldSizing:'revert-layer'}}
-            />
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+
+            <ShoppingCartIcon />
 
             <Typography
-            component={'h4'}
-              sx={{fontWeight:'bold'}}
-              
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+              }}
             >
+
               My Cart
+
             </Typography>
 
           </Box>
@@ -342,7 +570,9 @@ function CartPage() {
               color="error"
               onClick={clearCart}
             >
+
               Clear Cart
+
             </Button>
 
           )}
@@ -350,7 +580,7 @@ function CartPage() {
         </Box>
 
 
-        {/* EMPTY CART */}
+        {/* ================= EMPTY CART ================= */}
 
         {cartItems.length === 0 ? (
 
@@ -370,12 +600,16 @@ function CartPage() {
                 }}
               />
 
+
               <Typography
-                component={'h4'}
-                sx={{fontWeight:'bold'}}
-              
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                }}
               >
+
                 Your Cart is Empty
+
               </Typography>
 
             </CardContent>
@@ -384,133 +618,323 @@ function CartPage() {
 
         ) : (
 
+
+          /* ================= CART + SUMMARY ================= */
+
           <Box
-            sx={{display:'flex',
-            gap:'3',
-            flexDirection :'columns',medium:'row'
-            
+            sx={{
+              display: "flex",
+              gap: 3,
+              flexDirection: {
+                xs: "column",
+                md: "row",
+              },
             }}
           >
 
-            {/* CART ITEMS */}
 
-            <Box sx={{flex:'1'}}>
+            {/* ================= CART ITEMS ================= */}
 
-              {cartItems.map((item) => (
+            <Box
+              sx={{
+                flex: 1,
+              }}
+            >
 
-                <Card
-                  key={item.id}
-                  sx={{ mb: 2 }}
-                >
+              {cartItems.map(
+                (item) => {
 
-                  <CardContent>
 
-                    <Box
-                      sx={{display:'flex',justifyContent:'space-around',alignItems:'center',mb:'3'}}
+                  const product =
+                    item.product;
+
+
+                  const imageUrl =
+                    getImageUrl(
+                      product?.image_ids
+                    );
+
+
+                  return (
+
+                    <Card
+                      key={item.id}
+                      sx={{
+                        mb: 2,
+                      }}
                     >
 
-                      {/* PRODUCT */}
-
-                      <Box sx={{flex:'1'}}>
-
-                        <Typography
-                           component={'h4'}
-                           sx={{fontWeight:'bold'}}
-                        >
-                          Product ID: {item.id}
-                        </Typography>
-
-                        <Typography
-                          sx={{ mt: 1 }}
-                        >
-                          Price: ₹
-                          {Number(
-                            item.price_at_add
-                          ).toFixed(2)}
-                        </Typography>
-
-                      </Box>
+                      <CardContent>
 
 
-                      {/* QUANTITY */}
-
-                      <Box
-                        sx={{display:'flex',justifyContent:'space-around'}}
-                      >
-
-                        <IconButton
-                          onClick={() =>
-                            updateQuantity(
-                              item.id,
-                              item.quantity - 1
-                            )
-                          }
-                        >
-                          <RemoveIcon />
-                        </IconButton>
-
-                        <Typography
+                        <Box
                           sx={{
-                            mx: 1,
-                            fontWeight: "bold",
+                            display: "flex",
+                            gap: 2,
+                            alignItems: "center",
+
+                            flexDirection: {
+                              xs: "column",
+                              sm: "row",
+                            },
                           }}
                         >
-                          {item.quantity}
-                        </Typography>
-
-                        <IconButton
-                          onClick={() =>
-                            updateQuantity(
-                              item.id,
-                              item.quantity + 1
-                            )
-                          }
-                        >
-                          <AddIcon />
-                        </IconButton>
-
-                      </Box>
 
 
-                      {/* SUBTOTAL */}
+                          {/* ================= IMAGE ================= */}
 
-                      <Typography
-                      sx={{fontWeight:'bold'}}
-                        
-                      >
-                        ₹
-                        {(
-                          Number(
-                            item.price_at_add
-                          ) *
-                          item.quantity
-                        ).toFixed(2)}
-                      </Typography>
+                          <Box
+                            sx={{
+                              width: 140,
+                              height: 140,
+
+                              backgroundColor:
+                                "#f5f5f5",
+
+                              display: "flex",
+
+                              alignItems:
+                                "center",
+
+                              justifyContent:
+                                "center",
+
+                              overflow: "hidden",
+
+                              flexShrink: 0,
+                            }}
+                          >
+
+                            {imageUrl ? (
+
+                              <Box
+                                component="img"
+
+                                src={imageUrl}
+
+                                alt={
+                                  product?.productName
+                                }
+
+                                sx={{
+                                  width:
+                                    "100%",
+
+                                  height:
+                                    "100%",
+
+                                  objectFit:
+                                    "cover",
+                                }}
+
+                                onError={(e) => {
+
+                                  e.currentTarget.style.display =
+                                    "none";
+
+                                }}
+                              />
+
+                            ) : (
+
+                              <Typography
+                                color="text.secondary"
+                              >
+
+                                No Image
+
+                              </Typography>
+
+                            )}
+
+                          </Box>
 
 
-                      {/* DELETE */}
+                          {/* ================= PRODUCT DETAILS ================= */}
 
-                      <IconButton
-                        color="error"
-                        onClick={() =>
-                          deleteItem(item.id)
-                        }
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                          <Box
+                            sx={{
+                              flex: 1,
+                              width: "100%",
+                            }}
+                          >
 
-                    </Box>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                fontWeight:
+                                  "bold",
+                              }}
+                            >
 
-                  </CardContent>
+                              {
+                                product?.productName ||
+                                `Product ID: ${item.id}`
+                              }
 
-                </Card>
+                            </Typography>
 
-              ))}
+
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{
+                                mt: 1,
+                              }}
+                            >
+
+                              {
+                                product?.description
+                              }
+
+                            </Typography>
+
+
+                            <Typography
+                              sx={{
+                                mt: 1,
+                              }}
+                            >
+
+                              Price: ₹
+                              {Number(
+                                item.price_at_add
+                              ).toFixed(2)}
+
+                            </Typography>
+
+
+                            {/* ================= QUANTITY ================= */}
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems:
+                                  "center",
+                                mt: 2,
+                              }}
+                            >
+
+                              <IconButton
+                                onClick={() =>
+                                  updateQuantity(
+                                    item.id,
+                                    item.quantity -
+                                      1
+                                  )
+                                }
+
+                                disabled={
+                                  item.quantity <= 1
+                                }
+                              >
+
+                                <RemoveIcon />
+
+                              </IconButton>
+
+
+                              <Typography
+                                sx={{
+                                  mx: 2,
+                                  fontWeight:
+                                    "bold",
+                                }}
+                              >
+
+                                {
+                                  item.quantity
+                                }
+
+                              </Typography>
+
+
+                              <IconButton
+                                onClick={() =>
+                                  updateQuantity(
+                                    item.id,
+                                    item.quantity +
+                                      1
+                                  )
+                                }
+                              >
+
+                                <AddIcon />
+
+                              </IconButton>
+
+                            </Box>
+
+                          </Box>
+
+
+                          {/* ================= SUBTOTAL ================= */}
+
+                          <Box
+                            sx={{
+                              textAlign:
+                                "right",
+                              minWidth: 100,
+                            }}
+                          >
+
+                            <Typography
+                              sx={{
+                                fontWeight:
+                                  "bold",
+                                fontSize:
+                                  "18px",
+                              }}
+                            >
+
+                              ₹
+                              {(
+                                Number(
+                                  item.price_at_add
+                                ) *
+                                item.quantity
+                              ).toFixed(2)}
+
+                            </Typography>
+
+
+                            {/* DELETE */}
+
+                            <IconButton
+                              color="error"
+                              onClick={() =>
+                                deleteItem(
+                                  item.id
+                                )
+                              }
+                              sx={{
+                                mt: 1,
+                              }}
+                            >
+
+                              <DeleteIcon />
+
+                            </IconButton>
+
+                          </Box>
+
+
+                        </Box>
+
+                      </CardContent>
+
+                    </Card>
+
+                  );
+
+                }
+
+              )}
 
             </Box>
 
 
-            {/* ORDER SUMMARY */}
+            {/* ================= ORDER SUMMARY ================= */}
 
             <Card
               sx={{
@@ -518,23 +942,41 @@ function CartPage() {
                   xs: "100%",
                   md: 350,
                 },
-                height: "fit-content",
+
+                height:
+                  "fit-content",
               }}
             >
 
               <CardContent>
 
                 <Typography
-                  component={'h4'}
-                           sx={{fontWeight:'bold'}}
+                  variant="h5"
+                  sx={{
+                    fontWeight:
+                      "bold",
+                  }}
                 >
+
                   Order Summary
+
                 </Typography>
 
-                <Divider sx={{ my: 2 }} />
+
+                <Divider
+                  sx={{
+                    my: 2,
+                  }}
+                />
+
 
                 <Box
-                  sx={{display:'flex',justifyContent:'space-around',alignItems:'center',mb:'3'}}
+                  sx={{
+                    display: "flex",
+                    justifyContent:
+                      "space-between",
+                    mb: 2,
+                  }}
                 >
 
                   <Typography>
@@ -547,30 +989,49 @@ function CartPage() {
 
                 </Box>
 
+
                 <Box
-                  sx={{display:'flex',justifyContent:'space-around',alignItems:'center',mb:'3'}}
+                  sx={{
+                    display: "flex",
+                    justifyContent:
+                      "space-between",
+                  }}
                 >
 
                   <Typography>
                     Total
                   </Typography>
 
+
                   <Typography
-                     component={'h4'}
-                           sx={{fontWeight:'bold'}}
+                    variant="h5"
+                    sx={{
+                      fontWeight:
+                        "bold",
+                    }}
                   >
-                    ₹{totalAmount.toFixed(2)}
+
+                    ₹
+                    {totalAmount.toFixed(
+                      2
+                    )}
+
                   </Typography>
 
                 </Box>
+
 
                 <Button
                   fullWidth
                   variant="contained"
                   size="large"
-                  sx={{ mt: 3 }}
+                  sx={{
+                    mt: 3,
+                  }}
                 >
+
                   Proceed to Checkout
+
                 </Button>
 
               </CardContent>
@@ -582,11 +1043,15 @@ function CartPage() {
         )}
 
       </Container>
+      
 
     </Box>
+    </>
 
   );
+
 }
+
 
 export default CartPage;
 

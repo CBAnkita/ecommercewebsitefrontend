@@ -71,10 +71,12 @@ function Topbar({
 
             <Container
                 sx={{
-                    maxWidth: '99vw',
+                    
                     p: 0,
                     m: 0
                 }}
+                maxWidth='xl'
+            
             >
 
                 <Toolbar disableGutters>
@@ -148,7 +150,7 @@ function Topbar({
 
 
                     {/* Search */}
-
+                        <Box sx={{display:'flex', flexDirection:'row',alignItems:'flex-end'}}>
                     <TextField
                         type="text"
 
@@ -261,6 +263,7 @@ function Topbar({
 
                     </Menu>
 
+                    </Box>
 
                 </Toolbar>
 

@@ -24,6 +24,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Topbar from '../Component/Topbar';
 
 interface Category {
   categoryId?: number;
@@ -472,6 +473,7 @@ function Categories() {
         </DialogActions>
       </Dialog>
     </Box>
+    
   );
 }
 

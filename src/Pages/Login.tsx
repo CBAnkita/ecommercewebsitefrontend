@@ -63,8 +63,9 @@ function Login() {
             console.log("Login successful");
             console.log("JWT:", response.data);
 
-            localStorage.setItem("token", response.data);
-
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("userId", String(response.data.userId));
+            
             alert("Login successful!");
             navigate("/home");
 

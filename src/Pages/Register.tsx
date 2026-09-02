@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 
 import axios from 'axios';
+import Topbar from '../Component/Topbar';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -156,9 +157,58 @@ function Register() {
     }
 
   };
+   const pages1 = [
+            {
+                menuItem:'Product',
+                link:'/products'
+            },
+            {
+                menuItem:'Categories',
+                link:'/Categories'
+            },
+            
+            
+            {
+                menuItem:'ContactUs',
+                link:'/ContactUs'
+            },
+            
+            ];
+
+
+
+    const settings1 = [
+            {
+                settingitem:'Profile',
+                settinglink:'/profile'
+
+            }, 
+            {
+                settingitem:'Account',
+                settinglink:'/Account'
+            }, 
+            {
+                settingitem:'Dashboard',
+                settinglink:'/Dashboard'
+                
+            }
+            , 
+            {
+                settingitem:'Logout',
+                settinglink:'/Logout'
+                
+            }
+            ];
+
+
 
 
   return (
+    <>
+    <Topbar
+      pages={pages1}
+      settings={settings1}
+    />
 
     <Box
       sx={{
@@ -450,6 +500,7 @@ function Register() {
       </Paper>
 
     </Box>
+    </>
 
   );
 
