@@ -13,8 +13,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
-import Topbar from '../Component/Topbar';
+import { useLocation, useNavigate } from "react-router-dom";
+import Topbar from "../Component/Topbar";
 
 const API_URL = "http://localhost:8080/ecomapp";
 
@@ -37,8 +37,21 @@ interface PaymentResponse {
 }
 
 function Checkout() {
-
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ==========================================
+  // BUY NOW PRODUCT
+  // ==========================================
+
+  const buyNowProduct = location.state?.product;
+  const buyNowQuantity = location.state?.quantity || 1;
+
+  const isBuyNow = !!buyNowProduct;
+
+  // ==========================================
+  // STATES
+  // ==========================================
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartId, setCartId] = useState<string>("");
@@ -50,29 +63,43 @@ function Checkout() {
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
 
-
   // ==========================================
   // GET CART + CART ITEMS
   // ==========================================
 
   const getCheckoutData = async () => {
-
     try {
-
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
 
       if (!token || !userId) {
-
         alert("Please login first");
-
         navigate("/");
+        return;
+      }
+
+      // ==========================================
+      // BUY NOW
+      // ==========================================
+
+      if (isBuyNow) {
+        const buyNowItem: CartItem = {
+          id: 0,
+          productId: buyNowProduct.product_id,
+          quantity: buyNowQuantity,
+          price_at_add: Number(buyNowProduct.price),
+        };
+
+        setCartItems([buyNowItem]);
+
+        setLoading(false);
 
         return;
       }
 
-
-      // Get user's cart
+      // ==========================================
+      // CART CHECKOUT
+      // ==========================================
 
       const cartResponse = await axios.get(
         `${API_URL}/cart/user/${userId}`,
@@ -83,15 +110,15 @@ function Checkout() {
         }
       );
 
-
       const cartData = cartResponse.data;
 
       console.log("Cart:", cartData);
 
       setCartId(cartData.id);
 
-
-      // Get cart items
+      // ==========================================
+      // GET CART ITEMS
+      // ==========================================
 
       const itemResponse = await axios.get(
         `${API_URL}/cartitem/cart/${cartData.id}`,
@@ -102,37 +129,22 @@ function Checkout() {
         }
       );
 
-
-      console.log(
-        "Cart Items:",
-        itemResponse.data
-      );
-
+      console.log("Cart Items:", itemResponse.data);
 
       setCartItems(itemResponse.data);
-
     } catch (error: any) {
-
       console.log(
         "Checkout error:",
         error.response?.data || error
       );
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
-
   useEffect(() => {
-
     getCheckoutData();
-
   }, []);
-
 
   // ==========================================
   // TOTAL AMOUNT
@@ -141,42 +153,28 @@ function Checkout() {
   const totalAmount = cartItems.reduce(
     (total, item) =>
       total +
-      Number(item.price_at_add) *
-      item.quantity,
+      Number(item.price_at_add) * item.quantity,
     0
   );
-
 
   // ==========================================
   // INITIATE PAYMENT
   // ==========================================
 
-  const initiatePayment = async (
-    orderId: number
-  ) => {
-
+  const initiatePayment = async (orderId: number) => {
     try {
-
-      const token =
-        localStorage.getItem("token");
-
+      const token = localStorage.getItem("token");
 
       if (!token) {
-
         alert("Please login first");
-
         navigate("/");
-
         return;
-
       }
-
 
       console.log(
         "Initiating payment for order:",
         orderId
       );
-
 
       const response =
         await axios.post<PaymentResponse>(
@@ -189,78 +187,50 @@ function Checkout() {
             },
 
             headers: {
-              Authorization:
-                `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-
 
       console.log(
         "Payment Response:",
         response.data
       );
 
+      const payment = response.data;
 
-      const payment =
-        response.data;
-
-
-      if (
-        payment.status === "INITIATED"
-      ) {
-
+      if (payment.status === "INITIATED") {
         alert(
           `Payment initiated successfully!\n\n` +
-          `Order ID: ${orderId}\n` +
-          `Amount: ₹${Number(
-            payment.amount
-          ).toFixed(2)}\n` +
-          `Transaction ID: ${payment.transactionId}`
+            `Order ID: ${orderId}\n` +
+            `Amount: ₹${Number(
+              payment.amount
+            ).toFixed(2)}\n` +
+            `Transaction ID: ${payment.transactionId}`
         );
 
-
-        // Payment page वर जा
-        navigate(
-          `/payment/${orderId}`,
-          {
-            state: {
-              orderId: orderId,
-              amount: payment.amount,
-              transactionId:
-                payment.transactionId,
-              paymentMethod:
-                payment.payment_method,
-            },
-          }
-        );
-
+        navigate(`/payment/${orderId}`, {
+          state: {
+            orderId: orderId,
+            amount: payment.amount,
+            transactionId:
+              payment.transactionId,
+            paymentMethod:
+              payment.payment_method,
+          },
+        });
       } else {
-
-        alert(
-          "Payment initiation failed"
-        );
-
+        alert("Payment initiation failed");
       }
-
     } catch (error: any) {
-
-      console.log(
-        "Payment error:",
-        error
-      );
-
+      console.log("Payment error:", error);
 
       console.log(
         "Payment response:",
         error.response?.data
       );
 
-
-      if (
-        error.response?.status === 401
-      ) {
-
+      if (error.response?.status === 401) {
         alert(
           "Session expired. Please login again."
         );
@@ -268,335 +238,241 @@ function Checkout() {
         localStorage.removeItem("token");
 
         navigate("/");
-
       } else {
-
         alert(
           error.response?.data ||
-          "Payment initiation failed"
+            "Payment initiation failed"
         );
-
       }
-
     }
-
   };
-
 
   // ==========================================
   // PLACE ORDER
   // ==========================================
 
   const placeOrder = async () => {
-
-
-    // Address validation
+    // ==========================================
+    // ADDRESS VALIDATION
+    // ==========================================
 
     if (!address.trim()) {
-
-      alert(
-        "Please enter delivery address"
-      );
-
+      alert("Please enter delivery address");
       return;
-
     }
 
-
-    // City validation
+    // ==========================================
+    // CITY VALIDATION
+    // ==========================================
 
     if (!city.trim()) {
-
-      alert(
-        "Please enter city"
-      );
-
+      alert("Please enter city");
       return;
-
     }
 
-
-    // Pincode validation
+    // ==========================================
+    // PINCODE VALIDATION
+    // ==========================================
 
     if (!pincode.trim()) {
-
-      alert(
-        "Please enter pincode"
-      );
-
+      alert("Please enter pincode");
       return;
-
     }
 
-
     if (pincode.length !== 6) {
-
       alert(
         "Please enter valid 6 digit pincode"
       );
-
       return;
-
     }
 
-
-    // Cart validation
+    // ==========================================
+    // CART VALIDATION
+    // ==========================================
 
     if (cartItems.length === 0) {
-
-      alert(
-        "Cart is empty"
-      );
-
+      alert("No products to order");
       return;
-
     }
 
-
-    const token =
-      localStorage.getItem("token");
-
-    const userId =
-      localStorage.getItem("userId");
-
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     if (!token || !userId) {
-
-      alert(
-        "Please login first"
-      );
-
+      alert("Please login first");
       navigate("/");
-
       return;
-
     }
 
-
     try {
-
       setPlacingOrder(true);
-
 
       // ==========================================
       // CREATE ORDER REQUEST
       // ==========================================
 
       const orderRequest = {
+        address: address.trim(),
 
-        items: cartItems.map(
-          (item) => ({
+        city: city.trim(),
 
-            productId:
-              item.productId,
+        pincode: pincode.trim(),
 
-            quantity:
-              item.quantity,
+        items: cartItems.map((item) => ({
+          productId: item.productId,
 
-          })
-        ),
-
+          quantity: item.quantity,
+        })),
       };
-
 
       console.log(
         "Order Request:",
         orderRequest
       );
 
-
       // ==========================================
       // PLACE ORDER API
       // ==========================================
 
-      const response =
-        await axios.post(
-          `${API_URL}/order/place/${userId}`,
-          orderRequest,
-          {
-            headers: {
+      const response = await axios.post(
+        `${API_URL}/order/place/${userId}`,
+        orderRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
 
-              Authorization:
-                `Bearer ${token}`,
-
-              "Content-Type":
-                "application/json",
-
-            },
-          }
-        );
-
+            "Content-Type":
+              "application/json",
+          },
+        }
+      );
 
       console.log(
         "Order Response:",
         response.data
       );
 
-
       const orderId =
         response.data.order_id;
 
-
       if (!orderId) {
-
         alert(
           "Order created but Order ID not received."
         );
 
         return;
-
       }
-
 
       console.log(
         "Created Order ID:",
         orderId
       );
 
-
       // ==========================================
-      // PAYMENT INITIATE
+      // INITIATE PAYMENT
       // ==========================================
 
-      await initiatePayment(
-        orderId
-      );
-
+      await initiatePayment(orderId);
 
       /*
-       IMPORTANT:
+        IMPORTANT:
 
-       Cart आत्ता clear करू नको.
+        Cart आत्ता clear करत नाही.
 
-       Payment SUCCESS झाल्यानंतर
-       cart clear करू.
+        Payment SUCCESS झाल्यानंतर
+        cart clear करू.
 
-       त्यामुळे user payment fail/cancel
-       केल्यास cart मधील products राहतील.
+        Buy Now असेल तर cart clear करण्याची
+        गरज नाही.
       */
-
-
     } catch (error: any) {
-
       console.log(
         "Place order error:",
         error
       );
-
 
       console.log(
         "Response:",
         error.response?.data
       );
 
-
-      if (
-        error.response?.status === 401
-      ) {
-
+      if (error.response?.status === 401) {
         alert(
           "Session expired. Please login again."
         );
 
-        localStorage.removeItem(
-          "token"
-        );
+        localStorage.removeItem("token");
 
         navigate("/");
-
       } else {
-
         alert(
           error.response?.data ||
-          "Failed to place order"
+            "Failed to place order"
         );
-
       }
-
     } finally {
-
       setPlacingOrder(false);
-
     }
-
   };
-
 
   // ==========================================
   // LOADING
   // ==========================================
 
   if (loading) {
-
     return (
-   
-
       <Container
         sx={{
           mt: 5,
           textAlign: "center",
         }}
       >
-
         <CircularProgress />
 
-        <Typography
-          sx={{ mt: 2 }}
-        >
+        <Typography sx={{ mt: 2 }}>
           Loading checkout...
         </Typography>
-
       </Container>
-
     );
-
   }
 
-   const pages1 = [
-            {
-                menuItem:'Product',
-                link:'/products'
-            },
-            {
-                menuItem:'Categories',
-                link:'/Categories'
-            },
-            
-            
-            {
-                menuItem:'ContactUs',
-                link:'/ContactUs'
-            },
-            
-            ];
+  // ==========================================
+  // TOPBAR PAGES
+  // ==========================================
 
+  const pages1 = [
+    {
+      menuItem: "Product",
+      link: "/products",
+    },
+    {
+      menuItem: "Categories",
+      link: "/Categories",
+    },
+    {
+      menuItem: "ContactUs",
+      link: "/ContactUs",
+    },
+  ];
 
-
-    const settings1 = [
-            {
-                settingitem:'Profile',
-                settinglink:'/profile'
-
-            }, 
-            {
-                settingitem:'Account',
-                settinglink:'/Account'
-            }, 
-            {
-                settingitem:'Dashboard',
-                settinglink:'/Dashboard'
-                
-            }
-            , 
-            {
-                settingitem:'Logout',
-                settinglink:'/Logout'
-                
-            }
-            ];
-
-
-
+  const settings1 = [
+    {
+      settingitem: "Profile",
+      settinglink: "/profile",
+    },
+    {
+      settingitem: "Account",
+      settinglink: "/Account",
+    },
+    {
+      settingitem: "Dashboard",
+      settinglink: "/Dashboard",
+    },
+    {
+      settingitem: "Logout",
+      settinglink: "/Logout",
+    },
+  ];
 
   // ==========================================
   // UI
@@ -604,288 +480,288 @@ function Checkout() {
 
   return (
     <>
-    <Topbar
-      pages={pages1}
-      settings={settings1}
-    />
+      <Topbar
+        pages={pages1}
+        settings={settings1}
+      />
 
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "#f5f5f5",
-        py: 4,
-      }}
-    >
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#f5f5f5",
+           pt: 12,
+           pb: 4,
+        }}
+      >
+        <Container maxWidth="lg">
 
-      <Container maxWidth="lg">
+          {/* PAGE TITLE */}
 
-
-        {/* PAGE TITLE */}
-
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: "bold",
-            mb: 3,
-          }}
-        >
-          Checkout
-        </Typography>
-
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 3,
-
-            flexDirection: {
-              xs: "column",
-              md: "row",
-            },
-          }}
-        >
-
-
-          {/* ==================================
-              DELIVERY ADDRESS
-          =================================== */}
-
-          <Card sx={{ flex: 1 }}>
-
-            <CardContent>
-
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                  mb: 3,
-                }}
-              >
-                Delivery Address
-              </Typography>
-
-
-              {/* Address */}
-
-              <TextField
-                label="Address"
-                fullWidth
-                multiline
-                rows={4}
-                value={address}
-                onChange={(e) =>
-                  setAddress(
-                    e.target.value
-                  )
-                }
-                sx={{ mb: 2 }}
-              />
-
-
-              {/* City */}
-
-              <TextField
-                label="City"
-                fullWidth
-                value={city}
-                onChange={(e) =>
-                  setCity(
-                    e.target.value
-                  )
-                }
-                sx={{ mb: 2 }}
-              />
-
-
-              {/* Pincode */}
-
-              <TextField
-                    label="Pincode"
-                    fullWidth
-                    value={pincode}
-                    slotProps={{
-                        htmlInput: {
-                        maxLength: 6,
-                        inputMode: "numeric",
-                        },
-                    }}
-                    onChange={(e) =>
-                        setPincode(
-                        e.target.value.replace(/\D/g, "")
-                        )
-                    }
-                    />
-
-            </CardContent>
-
-          </Card>
-
-
-          {/* ==================================
-              ORDER SUMMARY
-          =================================== */}
-
-          <Card
+          <Typography
+            variant="h4"
             sx={{
-              width: {
-                xs: "100%",
-                md: 350,
-              },
+              fontWeight: "bold",
+              mb: 3,
+            }}
+          >
+            Checkout
+          </Typography>
 
-              height:
-                "fit-content",
+          <Box
+            sx={{
+              display: "flex",
+              gap: 3,
+
+              flexDirection: {
+                xs: "column",
+                md: "row",
+              },
             }}
           >
 
-            <CardContent>
+            {/* ==================================
+                DELIVERY ADDRESS
+            =================================== */}
 
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: "bold",
-                }}
-              >
-                Order Summary
-              </Typography>
-
-
-              <Divider
-                sx={{ my: 2 }}
-              />
-
-
-              {/* ITEMS */}
-
-              {cartItems.map(
-                (item) => (
-
-                  <Box
-                    key={item.id}
-                    sx={{
-                      display: "flex",
-                      justifyContent:
-                        "space-between",
-                      mb: 2,
-                    }}
-                  >
-
-                    <Typography>
-
-                      Product{" "}
-                      {item.productId}
-
-                      {" × "}
-
-                      {item.quantity}
-
-                    </Typography>
-
-
-                    <Typography>
-
-                      ₹
-                      {(
-                        Number(
-                          item.price_at_add
-                        ) *
-                        item.quantity
-                      ).toFixed(2)}
-
-                    </Typography>
-
-                  </Box>
-
-                )
-              )}
-
-
-              <Divider
-                sx={{ my: 2 }}
-              />
-
-
-              {/* TOTAL */}
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent:
-                    "space-between",
-                }}
-              >
-
-                <Typography>
-                  Total
-                </Typography>
-
+            <Card sx={{ flex: 1 }}>
+              <CardContent>
 
                 <Typography
+                  variant="h5"
                   sx={{
-                    fontWeight:
-                      "bold",
+                    fontWeight: "bold",
+                    mb: 3,
                   }}
                 >
-                  ₹
-                  {totalAmount.toFixed(
-                    2
-                  )}
+                  Delivery Address
                 </Typography>
 
-              </Box>
+                {/* ADDRESS */}
 
+                <TextField
+                  label="Address"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  value={address}
+                  onChange={(e) =>
+                    setAddress(
+                      e.target.value
+                    )
+                  }
+                  sx={{ mb: 2 }}
+                />
 
-              {/* PLACE ORDER */}
+                {/* CITY */}
 
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                sx={{
-                  mt: 3,
-                }}
-                onClick={
-                  placeOrder
-                }
-                disabled={
-                  cartItems.length ===
-                    0 ||
-                  placingOrder
-                }
-              >
+                <TextField
+                  label="City"
+                  fullWidth
+                  value={city}
+                  onChange={(e) =>
+                    setCity(
+                      e.target.value
+                    )
+                  }
+                  sx={{ mb: 2 }}
+                />
 
-                {placingOrder ? (
+                {/* PINCODE */}
 
-                  <CircularProgress
-                    size={24}
-                    color="inherit"
-                  />
+                <TextField
+                  label="Pincode"
+                  fullWidth
+                  value={pincode}
+                  slotProps={{
+                    htmlInput: {
+                      maxLength: 6,
+                      inputMode: "numeric",
+                    },
+                  }}
+                  onChange={(e) =>
+                    setPincode(
+                      e.target.value.replace(
+                        /\D/g,
+                        ""
+                      )
+                    )
+                  }
+                />
 
-                ) : (
+              </CardContent>
+            </Card>
 
-                  "Proceed to Payment"
+            {/* ==================================
+                ORDER SUMMARY
+            =================================== */}
 
-                )}
+            <Card
+              sx={{
+                width: {
+                  xs: "100%",
+                  md: 350,
+                },
 
-              </Button>
+                height: "fit-content",
+              }}
+            >
+              <CardContent>
 
-            </CardContent>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: "bold",
+                  }}
+                >
+                  Order Summary
+                </Typography>
 
-          </Card>
+                <Divider
+                  sx={{ my: 2 }}
+                />
 
-        </Box>
+                {/* BUY NOW PRODUCT */}
 
-      </Container>
-      
+                {isBuyNow &&
+                  buyNowProduct && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent:
+                          "space-between",
+                        mb: 2,
+                      }}
+                    >
+                      <Box>
+                        <Typography
+                          sx={{
+                            fontWeight:
+                              "bold",
+                          }}
+                        >
+                          {
+                            buyNowProduct.productName
+                          }
+                        </Typography>
 
-    </Box>
+                        <Typography>
+                          Qty:{" "}
+                          {buyNowQuantity}
+                        </Typography>
+                      </Box>
+
+                      <Typography>
+                        ₹
+                        {(
+                          Number(
+                            buyNowProduct.price
+                          ) *
+                          buyNowQuantity
+                        ).toFixed(2)}
+                      </Typography>
+                    </Box>
+                  )}
+
+                {/* CART PRODUCTS */}
+
+                {!isBuyNow &&
+                  cartItems.map(
+                    (item) => (
+                      <Box
+                        key={item.id}
+                        sx={{
+                          display: "flex",
+                          justifyContent:
+                            "space-between",
+                          mb: 2,
+                        }}
+                      >
+                        <Typography>
+                          Product{" "}
+                          {item.productId}
+
+                          {" × "}
+
+                          {item.quantity}
+                        </Typography>
+
+                        <Typography>
+                          ₹
+                          {(
+                            Number(
+                              item.price_at_add
+                            ) *
+                            item.quantity
+                          ).toFixed(2)}
+                        </Typography>
+                      </Box>
+                    )
+                  )}
+
+                <Divider
+                  sx={{ my: 2 }}
+                />
+
+                {/* TOTAL */}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent:
+                      "space-between",
+                  }}
+                >
+                  <Typography>
+                    Total
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      fontWeight:
+                        "bold",
+                    }}
+                  >
+                    ₹
+                    {totalAmount.toFixed(
+                      2
+                    )}
+                  </Typography>
+                </Box>
+
+                {/* PROCEED TO PAYMENT */}
+
+                <Button
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    mt: 3,
+                  }}
+                  onClick={placeOrder}
+                  disabled={
+                    cartItems.length ===
+                      0 ||
+                    placingOrder
+                  }
+                >
+                  {placingOrder ? (
+                    <CircularProgress
+                      size={24}
+                      color="inherit"
+                    />
+                  ) : (
+                    "Proceed to Payment"
+                  )}
+                </Button>
+
+              </CardContent>
+            </Card>
+
+          </Box>
+        </Container>
+      </Box>
     </>
-   
-
   );
-  
-
 }
 
-
 export default Checkout;
-

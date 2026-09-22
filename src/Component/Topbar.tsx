@@ -10,7 +10,8 @@ import {
     IconButton,
     Avatar,
     TextField,
-    Badge
+    Badge,
+
 } from '@mui/material';
 
 import React from 'react';
@@ -22,7 +23,8 @@ import {
     Person
 } from '@mui/icons-material';
 
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
+
 
 
 type NavigationPage = {
@@ -63,6 +65,14 @@ function Topbar({
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const navigate = useNavigate();
+
+        const handleSearch = () => {
+        if (search.trim() !== "") {
+            navigate(`/products?search=${encodeURIComponent(search)}`);
+        }
+        };
 
 
     return (
@@ -150,26 +160,34 @@ function Topbar({
 
 
                     {/* Search */}
-                        <Box sx={{display:'flex', flexDirection:'row',alignItems:'flex-end'}}>
-                    <TextField
-                        type="text"
-
-                        value={search}
-
-                        onChange={(e) =>
-                            setSearch(e.target.value)
-                        }
-
-                        placeholder="Search"
-
-                        size="small"
-
+                   <Box
                         sx={{
-                            backgroundColor: 'white',
-                            borderRadius: 1,
-                            width: '220px'
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
                         }}
-                    />
+                        >
+                        <TextField
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                handleSearch();
+                            }
+                            }}
+                            placeholder="Search"
+                            size="small"
+                            variant="outlined"
+                            sx={{
+                            backgroundColor: "white",
+                            borderRadius: 1,
+                            width: "220px",
+                            }}
+                        />
+
+                       
+                   </Box>
 
 
                     {/* Cart Icon */}
@@ -263,7 +281,7 @@ function Topbar({
 
                     </Menu>
 
-                    </Box>
+                    
 
                 </Toolbar>
 
