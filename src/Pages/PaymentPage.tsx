@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate,useParams } from "react-router-dom";
 import Topbar from '../Component/Topbar';
 
 import {
@@ -35,9 +35,7 @@ function PaymentPage() {
     useState(false);
 
 
-  // ==========================================
-  // CHECK PAYMENT DATA
-  // ==========================================
+
 
   if (!paymentData) {
 
@@ -81,9 +79,7 @@ function PaymentPage() {
   }
 
 
-  // ==========================================
-  // PAYMENT SUCCESS
-  // ==========================================
+
 
   const handlePaymentSuccess =
     async () => {
@@ -107,9 +103,7 @@ function PaymentPage() {
         }
 
 
-        // ======================================
-        // PAYMENT WEBHOOK
-        // ======================================
+
 
         const response =
           await axios.post(
@@ -140,9 +134,7 @@ function PaymentPage() {
         );
 
 
-        // ======================================
-        // GET USER CART
-        // ======================================
+ 
 
         const userId =
           localStorage.getItem("userId");
@@ -188,9 +180,6 @@ function PaymentPage() {
         );
 
 
-        // ======================================
-        // GO TO ORDERS
-        // ======================================
 
         navigate("/orders");
 
@@ -221,9 +210,7 @@ function PaymentPage() {
     };
 
 
-  // ==========================================
-  // PAYMENT FAILED
-  // ==========================================
+
 
   const handlePaymentFailed =
     async () => {
@@ -333,9 +320,19 @@ function PaymentPage() {
 
 
 
-  // ==========================================
-  // UI
-  // ==========================================
+      
+    const PaymentPage = () => {
+      const { orderId } = useParams();
+
+      console.log("Order ID:", orderId);
+
+      return (
+        <div>
+          Payment for Order: {orderId}
+        </div>
+      );
+    };
+
 
   return (
     <>

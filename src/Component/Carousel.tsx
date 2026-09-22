@@ -10,7 +10,7 @@ function Carousel(props: any) {
   const [activeStep, setActiveStep] = useState(0);
   const [images, setImages] = useState(props.images);
 
-  // Automatically change image
+
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % images.length);
@@ -22,7 +22,7 @@ function Carousel(props: any) {
   return (
     <Box sx={{ width: "100%" }}>
 
-      {/* Image */}
+
       <Box
         component="img"
         src={images[activeStep]}
@@ -39,7 +39,7 @@ function Carousel(props: any) {
         }}
       />
 
-      {/* Dots */}
+     
       <Box
         sx={{
           display: "flex",

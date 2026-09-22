@@ -10,7 +10,6 @@ import {
     IconButton,
     Avatar,
     TextField,
-    Badge,
 } from '@mui/material';
 
 import React from 'react';
@@ -18,77 +17,50 @@ import React from 'react';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 
 import {
-    ShoppingCart,
-    Person
+    Person,
 } from '@mui/icons-material';
+
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import CategoryIcon from '@mui/icons-material/Category';
+import PeopleIcon from '@mui/icons-material/People';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
 import { Link, useNavigate } from 'react-router-dom';
 
 
-type NavigationPage = {
-    link: string;
-    menuItem: string;
-};
-
-type settingpage = {
-    settingitem: string;
-    settinglink: string;
-};
-
-
-function Topbar({
-    pages,
-    settings
-}: {
-    pages: NavigationPage[];
-    settings: settingpage[];
-}) {
+function AdminTopbar() {
 
     const [search, setSearch] = React.useState('');
 
-    const [cartCount, setCartCount] = React.useState(0);
-
     const [anchorElUser, setAnchorElUser] =
         React.useState<null | HTMLElement>(null);
-
-    const [role, setRole] = React.useState(
-        localStorage.getItem("role")
-    );
 
     const navigate = useNavigate();
 
 
     // =========================
-    // USER MENU OPEN
+    // ADMIN MENU OPEN
     // =========================
 
     const handleOpenUserMenu = (
         event: React.MouseEvent<HTMLElement>
     ) => {
+
         setAnchorElUser(event.currentTarget);
+
     };
 
 
     // =========================
-    // USER MENU CLOSE
+    // ADMIN MENU CLOSE
     // =========================
 
     const handleCloseUserMenu = () => {
+
         setAnchorElUser(null);
+
     };
-
-
-    // =========================
-    // GET ROLE
-    // =========================
-
-    React.useEffect(() => {
-
-        const currentRole = localStorage.getItem("role");
-
-        setRole(currentRole);
-
-    }, []);
 
 
     // =========================
@@ -97,23 +69,13 @@ function Topbar({
 
     const handleSearch = () => {
 
-        if (search.trim() === "") {
+        if (search.trim() === '') {
             return;
         }
 
-        if (role === "ADMIN") {
-
-            navigate(
-                `/admin/products?search=${encodeURIComponent(search)}`
-            );
-
-        } else {
-
-            navigate(
-                `/products?search=${encodeURIComponent(search)}`
-            );
-
-        }
+        navigate(
+            `/admin/products?search=${encodeURIComponent(search)}`
+        );
 
     };
 
@@ -151,7 +113,7 @@ function Topbar({
 
 
                     {/* ========================= */}
-                    {/* LOGO */}
+                    {/* LOGO ICON */}
                     {/* ========================= */}
 
                     <LocalMallIcon
@@ -172,8 +134,8 @@ function Topbar({
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
+                        component={Link}
+                        to="/admin/dashboard"
                         sx={{
                             mr: 3,
                             display: {
@@ -191,7 +153,7 @@ function Topbar({
 
 
                     {/* ========================= */}
-                    {/* NAVIGATION */}
+                    {/* ADMIN NAVIGATION */}
                     {/* ========================= */}
 
                     <Box
@@ -203,26 +165,132 @@ function Topbar({
                         }}
                     >
 
-                        {pages.map((item) => (
 
-                            <Link
-                                key={item.link}
-                                to={item.link}
-                                style={{
-                                    color: 'white',
-                                    textDecoration: 'none'
-                                }}
-                            >
-                                {item.menuItem}
-                            </Link>
+                        {/* ========================= */}
+                        {/* DASHBOARD */}
+                        {/* ========================= */}
 
-                        ))}
+                        <Link
+                            to="/admin/dashboard"
+                            style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+
+                            <DashboardIcon
+                                fontSize="small"
+                            />
+
+                            Dashboard
+
+                        </Link>
+
+
+                        {/* ========================= */}
+                        {/* PRODUCTS */}
+                        {/* ========================= */}
+
+                        <Link
+                            to="/admin/add-product"
+                            style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+
+                            <Inventory2Icon
+                                fontSize="small"
+                            />
+
+                            Products
+
+                        </Link>
+
+
+                        {/* ========================= */}
+                        {/* CATEGORIES */}
+                        {/* ========================= */}
+
+                        <Link
+                            to="/admin/categories"
+                            style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+
+                            <CategoryIcon
+                                fontSize="small"
+                            />
+
+                            Categories
+
+                        </Link>
+
+
+                        {/* ========================= */}
+                        {/* USERS */}
+                        {/* ========================= */}
+
+                        <Link
+                            to="/admin/users"
+                            style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+
+                            <PeopleIcon
+                                fontSize="small"
+                            />
+
+                            Users
+
+                        </Link>
+
+
+                        {/* ========================= */}
+                        {/* ORDERS */}
+                        {/* ========================= */}
+
+                        <Link
+                            to="/admin/orders"
+                            style={{
+                                color: 'white',
+                                textDecoration: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px'
+                            }}
+                        >
+
+                            <ShoppingBagIcon
+                                fontSize="small"
+                            />
+
+                            Orders
+
+                        </Link>
+
 
                     </Box>
 
 
                     {/* ========================= */}
-                    {/* SEARCH */}
+                    {/* ADMIN SEARCH */}
                     {/* ========================= */}
 
                     <Box
@@ -246,7 +314,7 @@ function Topbar({
                                 }
 
                             }}
-                            placeholder="Search"
+                            placeholder="Search Products"
                             size="small"
                             variant="outlined"
                             sx={{
@@ -260,39 +328,10 @@ function Topbar({
 
 
                     {/* ========================= */}
-                    {/* CART - USER ONLY */}
+                    {/* ADMIN ACCOUNT */}
                     {/* ========================= */}
 
-                    {role === "USER" && (
-
-                        <IconButton
-                            component={Link}
-                            to="/cartitem"
-                            sx={{
-                                color: 'white',
-                                ml: 2
-                            }}
-                        >
-
-                            <Badge
-                                badgeContent={cartCount}
-                                color="error"
-                            >
-
-                                <ShoppingCart />
-
-                            </Badge>
-
-                        </IconButton>
-
-                    )}
-
-
-                    {/* ========================= */}
-                    {/* USER ACCOUNT */}
-                    {/* ========================= */}
-
-                    <Tooltip title="User Account">
+                    <Tooltip title="Admin Account">
 
                         <IconButton
                             onClick={handleOpenUserMenu}
@@ -320,7 +359,7 @@ function Topbar({
 
 
                     {/* ========================= */}
-                    {/* MENU */}
+                    {/* ADMIN MENU */}
                     {/* ========================= */}
 
                     <Menu
@@ -350,7 +389,9 @@ function Topbar({
                             to="/profile"
                             onClick={handleCloseUserMenu}
                         >
+
                             Profile
+
                         </MenuItem>
 
 
@@ -363,99 +404,100 @@ function Topbar({
                             to="/Account"
                             onClick={handleCloseUserMenu}
                         >
+
                             Account
+
                         </MenuItem>
-
-
-                        {/* ========================= */}
-                        {/* USER DASHBOARD */}
-                        {/* ========================= */}
-
-                        {role === "USER" && (
-
-                            <MenuItem
-                                component={Link}
-                                to="/Dashboard"
-                                onClick={handleCloseUserMenu}
-                            >
-                                Dashboard
-                            </MenuItem>
-
-                        )}
 
 
                         {/* ========================= */}
                         {/* ADMIN DASHBOARD */}
                         {/* ========================= */}
 
-                        {role === "ADMIN" && (
+                        <MenuItem
+                            component={Link}
+                            to="/admin/dashboard"
+                            onClick={handleCloseUserMenu}
+                        >
 
-                            <MenuItem
-                                component={Link}
-                                to="/admin/dashboard"
-                                onClick={handleCloseUserMenu}
-                            >
-                                Admin Dashboard
-                            </MenuItem>
+                            Admin Dashboard
 
-                        )}
+                        </MenuItem>
 
 
                         {/* ========================= */}
-                        {/* ADMIN MANAGEMENT */}
+                        {/* MANAGE USERS */}
                         {/* ========================= */}
 
-                        {role === "ADMIN" && (
+                        <MenuItem
+                            component={Link}
+                            to="/admin/users"
+                            onClick={handleCloseUserMenu}
+                        >
 
-                            <>
+                            Manage Users
 
-                                <MenuItem
-                                    component={Link}
-                                    to="/admin/users"
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    Manage Users
-                                </MenuItem>
+                        </MenuItem>
 
 
-                                <MenuItem
-                                    component={Link}
-                                    to="/admin/products"
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    Manage Products
-                                </MenuItem>
+                        {/* ========================= */}
+                        {/* MANAGE PRODUCTS */}
+                        {/* ========================= */}
+
+                        <MenuItem
+                            component={Link}
+                            to="/admin/products"
+                            onClick={handleCloseUserMenu}
+                        >
+
+                            Manage Products
+
+                        </MenuItem>
 
 
-                                <MenuItem
-                                    component={Link}
-                                    to="/admin/categories"
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    Manage Categories
-                                </MenuItem>
+                        {/* ========================= */}
+                        {/* MANAGE CATEGORIES */}
+                        {/* ========================= */}
+
+                        <MenuItem
+                            component={Link}
+                            to="/admin/categories"
+                            onClick={handleCloseUserMenu}
+                        >
+
+                            Manage Categories
+
+                        </MenuItem>
 
 
-                                <MenuItem
-                                    component={Link}
-                                    to="/admin/orders"
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    Manage Orders
-                                </MenuItem>
+                        {/* ========================= */}
+                        {/* MANAGE ORDERS */}
+                        {/* ========================= */}
+
+                        <MenuItem
+                            component={Link}
+                            to="/admin/orders"
+                            onClick={handleCloseUserMenu}
+                        >
+
+                            Manage Orders
+
+                        </MenuItem>
 
 
-                                <MenuItem
-                                    component={Link}
-                                    to="/admin/contacts"
-                                    onClick={handleCloseUserMenu}
-                                >
-                                    Manage Contacts
-                                </MenuItem>
+                        {/* ========================= */}
+                        {/* MANAGE CONTACTS */}
+                        {/* ========================= */}
 
-                            </>
+                        <MenuItem
+                            component={Link}
+                            to="/admin/contacts"
+                            onClick={handleCloseUserMenu}
+                        >
 
-                        )}
+                            Manage Contacts
+
+                        </MenuItem>
 
 
                         {/* ========================= */}
@@ -465,7 +507,9 @@ function Topbar({
                         <MenuItem
                             onClick={handleLogout}
                         >
+
                             Logout
+
                         </MenuItem>
 
 
@@ -479,7 +523,8 @@ function Topbar({
         </AppBar>
 
     );
+
 }
 
 
-export default Topbar;
+export default AdminTopbar;

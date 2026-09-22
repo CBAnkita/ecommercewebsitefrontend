@@ -247,32 +247,23 @@ function Checkout() {
     }
   };
 
-  // ==========================================
-  // PLACE ORDER
-  // ==========================================
+
 
   const placeOrder = async () => {
-    // ==========================================
-    // ADDRESS VALIDATION
-    // ==========================================
+
 
     if (!address.trim()) {
       alert("Please enter delivery address");
       return;
     }
 
-    // ==========================================
-    // CITY VALIDATION
-    // ==========================================
+
 
     if (!city.trim()) {
       alert("Please enter city");
       return;
     }
 
-    // ==========================================
-    // PINCODE VALIDATION
-    // ==========================================
 
     if (!pincode.trim()) {
       alert("Please enter pincode");
@@ -286,9 +277,7 @@ function Checkout() {
       return;
     }
 
-    // ==========================================
-    // CART VALIDATION
-    // ==========================================
+    
 
     if (cartItems.length === 0) {
       alert("No products to order");
@@ -307,9 +296,7 @@ function Checkout() {
     try {
       setPlacingOrder(true);
 
-      // ==========================================
-      // CREATE ORDER REQUEST
-      // ==========================================
+      
 
       const orderRequest = {
         address: address.trim(),
@@ -330,9 +317,7 @@ function Checkout() {
         orderRequest
       );
 
-      // ==========================================
-      // PLACE ORDER API
-      // ==========================================
+   
 
       const response = await axios.post(
         `${API_URL}/order/place/${userId}`,
@@ -368,23 +353,10 @@ function Checkout() {
         orderId
       );
 
-      // ==========================================
-      // INITIATE PAYMENT
-      // ==========================================
+ 
 
       await initiatePayment(orderId);
 
-      /*
-        IMPORTANT:
-
-        Cart आत्ता clear करत नाही.
-
-        Payment SUCCESS झाल्यानंतर
-        cart clear करू.
-
-        Buy Now असेल तर cart clear करण्याची
-        गरज नाही.
-      */
     } catch (error: any) {
       console.log(
         "Place order error:",
@@ -415,9 +387,6 @@ function Checkout() {
     }
   };
 
-  // ==========================================
-  // LOADING
-  // ==========================================
 
   if (loading) {
     return (
@@ -436,9 +405,7 @@ function Checkout() {
     );
   }
 
-  // ==========================================
-  // TOPBAR PAGES
-  // ==========================================
+
 
   const pages1 = [
     {
@@ -474,10 +441,7 @@ function Checkout() {
     },
   ];
 
-  // ==========================================
-  // UI
-  // ==========================================
-
+  
   return (
     <>
       <Topbar
@@ -519,9 +483,6 @@ function Checkout() {
             }}
           >
 
-            {/* ==================================
-                DELIVERY ADDRESS
-            =================================== */}
 
             <Card sx={{ flex: 1 }}>
               <CardContent>
@@ -591,9 +552,7 @@ function Checkout() {
               </CardContent>
             </Card>
 
-            {/* ==================================
-                ORDER SUMMARY
-            =================================== */}
+       
 
             <Card
               sx={{
@@ -620,7 +579,7 @@ function Checkout() {
                   sx={{ my: 2 }}
                 />
 
-                {/* BUY NOW PRODUCT */}
+            
 
                 {isBuyNow &&
                   buyNowProduct && (
@@ -702,7 +661,7 @@ function Checkout() {
                   sx={{ my: 2 }}
                 />
 
-                {/* TOTAL */}
+           
 
                 <Box
                   sx={{
@@ -728,7 +687,7 @@ function Checkout() {
                   </Typography>
                 </Box>
 
-                {/* PROCEED TO PAYMENT */}
+              
 
                 <Button
                   fullWidth

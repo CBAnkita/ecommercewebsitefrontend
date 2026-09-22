@@ -68,25 +68,25 @@ function Products() {
 
 
 
-  useEffect(() => {
-    setPage(1);
-  }, [searchText]);
+    useEffect(() => {
+      setPage(1);
+    }, [searchText]);
 
 
-  useEffect(() => {
-    setcurrentProducts(
-      filteredProducts.slice(
-        startIndex,
-        startIndex + productsPerPage
-      )
-    );
+    useEffect(() => {
+      setcurrentProducts(
+        filteredProducts.slice(
+          startIndex,
+          startIndex + productsPerPage
+        )
+      );
 
-    settotalPages(
-      Math.ceil(
-        filteredProducts.length / productsPerPage
-      )
-    );
-  }, [allproduct, searchText, page]);
+      settotalPages(
+        Math.ceil(
+          filteredProducts.length / productsPerPage
+        )
+      );
+    }, [allproduct, searchText, page]);
 
 
   const getFirstImageUrl = (image_ids: String[]) => {
@@ -145,9 +145,7 @@ function Products() {
         return;
       }
 
-      // =========================
-      // ADD PRODUCT TO CART
-      // =========================
+  
 
       const response = await axios.post(
         `http://localhost:8080/ecomapp/cart/${cart.id}/add`,
@@ -167,7 +165,7 @@ function Products() {
       );
 
       console.log("Add to cart response:", response.data);
-
+      window.dispatchEvent(new Event("cartUpdated"));
       alert(`${product.productName} added to cart!`);
     } catch (error: any) {
       console.log("Add to cart error:", error);
@@ -191,55 +189,55 @@ function Products() {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
 
-    if (!userId || !token) {
-      alert("Please login first");
-      return;
-    }
+        if (!userId || !token) {
+          alert("Please login first");
+          return;
+        }
 
-    navigate("/checkout", {
-      state: {
-        product: product,
-        quantity: 1,
-      },
-    });
-  };
+        navigate("/checkout", {
+          state: {
+            product: product,
+            quantity: 1,
+          },
+        });
+      };
 
 
 
   const pages1 = [
-    {
-      menuItem: "Product",
-      link: "/products",
-    },
-    {
-      menuItem: "Categories",
-      link: "/Categories",
-    },
-    {
-      menuItem: "ContactUs",
-      link: "/ContactUs",
-    },
-  ];
+          {
+            menuItem: "Product",
+            link: "/products",
+          },
+          {
+            menuItem: "Categories",
+            link: "/Categories",
+          },
+          {
+            menuItem: "ContactUs",
+            link: "/ContactUs",
+          },
+        ];
 
 
   const settings1 = [
-    {
-      settingitem: "Profile",
-      settinglink: "/profile",
-    },
-    {
-      settingitem: "Account",
-      settinglink: "/Account",
-    },
-    {
-      settingitem: "Dashboard",
-      settinglink: "/Dashboard",
-    },
-    {
-      settingitem: "Logout",
-      settinglink: "/Logout",
-    },
-  ];
+        {
+          settingitem: "Profile",
+          settinglink: "/profile",
+        },
+        {
+          settingitem: "Account",
+          settinglink: "/Account",
+        },
+        {
+          settingitem: "Dashboard",
+          settinglink: "/Dashboard",
+        },
+        {
+          settingitem: "Logout",
+          settinglink: "/Logout",
+        },
+      ];
 
 
   return (
@@ -306,9 +304,7 @@ function Products() {
                     }}
                   >
                     <Card>
-                      {/* =========================
-                          PRODUCT IMAGE
-                      ========================= */}
+                     
 
                       <Box
                         sx={{
@@ -339,9 +335,6 @@ function Products() {
                         )}
                       </Box>
 
-                      {/* =========================
-                          PRODUCT DETAILS
-                      ========================= */}
 
                       <CardContent>
                         <Typography
@@ -382,9 +375,6 @@ function Products() {
                           Stock: {product.stock_quantity}
                         </Typography>
 
-                        {/* =========================
-                            ADD TO CART
-                        ========================= */}
 
                         <Button
                           variant="contained"
@@ -404,9 +394,7 @@ function Products() {
                             : "Out of Stock"}
                         </Button>
 
-                        {/* =========================
-                            BUY NOW
-                        ========================= */}
+                        
 
                         <Button
                           variant="outlined"
@@ -430,9 +418,7 @@ function Products() {
               })}
             </Grid>
 
-            {/* =========================
-                PAGINATION
-            ========================= */}
+  
 
             {totalPages > 1 && (
               <Box

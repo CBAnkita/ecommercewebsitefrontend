@@ -136,7 +136,7 @@ function ForgotPassword() {
           >
 
             <Link
-              to="/Login"
+              to="/"
               style={{
                 textDecoration: "none"
               }}

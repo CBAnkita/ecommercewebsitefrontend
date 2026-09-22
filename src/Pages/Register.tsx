@@ -486,7 +486,7 @@ function Register() {
 
             <Button
               onClick={() =>
-                navigate('/login')
+                navigate('/')
               }
               variant="text"
             >
