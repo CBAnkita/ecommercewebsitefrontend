@@ -9,7 +9,7 @@ import {
   Typography
 } from "@mui/material";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -17,6 +17,8 @@ import axios from "axios";
 function ForgotPassword() {
 
   const [email, setEmail] = useState("");
+
+  const navigate = useNavigate();
 
 
   const handleSubmit = async () => {
@@ -32,20 +34,29 @@ function ForgotPassword() {
     try {
 
       const response = await axios.post(
-        "http://localhost:8080/ecomapp/ForgotPassword",
+        "http://localhost:8080/ecomapp/forgot-password",
         {
-          email: email
+          email: email.trim()
         }
       );
 
 
-      console.log(response.data);
+      console.log("Response:", response.data);
 
       alert("Password reset link sent successfully!");
 
+
+      // Reset Password page वर जा
+      navigate("/resetpassword", {
+        state: {
+          email: email.trim()
+        }
+      });
+
+
     } catch (error) {
 
-      console.log(error);
+      console.log("Forgot Password Error:", error);
 
 
       if (axios.isAxiosError(error)) {
@@ -97,6 +108,7 @@ function ForgotPassword() {
           >
             Forgot Password
           </Typography>
+
 
           <Typography
             variant="body2"

@@ -804,7 +804,7 @@ const AdminDashboard: React.FC = () => {
                 variant="contained"
                 startIcon={<AddBoxIcon />}
                 onClick={() =>
-                  navigate("/AdminProducts")
+                  navigate("/admin/products")
                 }
               >
                 Add Product

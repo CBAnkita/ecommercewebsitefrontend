@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
     AppBar,
     Container,
@@ -10,28 +12,23 @@ import {
     IconButton,
     Avatar,
     TextField,
-} from '@mui/material';
+} from "@mui/material";
 
-import React from 'react';
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import CategoryIcon from "@mui/icons-material/Category";
+import PeopleIcon from "@mui/icons-material/People";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
+import PersonIcon from "@mui/icons-material/Person";
 
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-
-import {
-    Person,
-} from '@mui/icons-material';
-
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
-import CategoryIcon from '@mui/icons-material/Category';
-import PeopleIcon from '@mui/icons-material/People';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 
 function AdminTopbar() {
 
-    const [search, setSearch] = React.useState('');
+    const [search, setSearch] = React.useState("");
 
     const [anchorElUser, setAnchorElUser] =
         React.useState<null | HTMLElement>(null);
@@ -40,7 +37,7 @@ function AdminTopbar() {
 
 
     // =========================
-    // ADMIN MENU OPEN
+    // OPEN ADMIN MENU
     // =========================
 
     const handleOpenUserMenu = (
@@ -53,7 +50,7 @@ function AdminTopbar() {
 
 
     // =========================
-    // ADMIN MENU CLOSE
+    // CLOSE ADMIN MENU
     // =========================
 
     const handleCloseUserMenu = () => {
@@ -64,12 +61,12 @@ function AdminTopbar() {
 
 
     // =========================
-    // SEARCH
+    // SEARCH PRODUCTS
     // =========================
 
     const handleSearch = () => {
 
-        if (search.trim() === '') {
+        if (search.trim() === "") {
             return;
         }
 
@@ -102,25 +99,25 @@ function AdminTopbar() {
         <AppBar position="fixed">
 
             <Container
+                maxWidth="xl"
                 sx={{
                     p: 0,
                     m: 0
                 }}
-                maxWidth="xl"
             >
 
                 <Toolbar disableGutters>
 
 
                     {/* ========================= */}
-                    {/* LOGO ICON */}
+                    {/* LOGO */}
                     {/* ========================= */}
 
                     <LocalMallIcon
                         sx={{
                             display: {
-                                xs: 'none',
-                                md: 'flex'
+                                xs: "none",
+                                md: "flex"
                             },
                             mr: 1
                         }}
@@ -139,13 +136,13 @@ function AdminTopbar() {
                         sx={{
                             mr: 3,
                             display: {
-                                xs: 'none',
-                                md: 'flex'
+                                xs: "none",
+                                md: "flex"
                             },
-                            fontFamily: 'monospace',
+                            fontFamily: "monospace",
                             fontWeight: 700,
-                            color: 'inherit',
-                            textDecoration: 'none'
+                            color: "inherit",
+                            textDecoration: "none"
                         }}
                     >
                         E-Commerce
@@ -158,130 +155,130 @@ function AdminTopbar() {
 
                     <Box
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
+                            display: "flex",
+                            alignItems: "center",
                             gap: 2,
                             flexGrow: 1
                         }}
                     >
 
 
-                        {/* ========================= */}
                         {/* DASHBOARD */}
-                        {/* ========================= */}
 
                         <Link
                             to="/admin/dashboard"
                             style={{
-                                color: 'white',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
                             }}
                         >
 
-                            <DashboardIcon
-                                fontSize="small"
-                            />
+                            <DashboardIcon fontSize="small" />
 
                             Dashboard
 
                         </Link>
 
 
-                        {/* ========================= */}
                         {/* PRODUCTS */}
-                        {/* ========================= */}
 
                         <Link
                             to="/admin/add-product"
                             style={{
-                                color: 'white',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
                             }}
                         >
 
-                            <Inventory2Icon
-                                fontSize="small"
-                            />
+                            <Inventory2Icon fontSize="small" />
 
                             Products
 
                         </Link>
 
 
-                        {/* ========================= */}
                         {/* CATEGORIES */}
-                        {/* ========================= */}
 
                         <Link
                             to="/admin/categories"
                             style={{
-                                color: 'white',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
                             }}
                         >
 
-                            <CategoryIcon
-                                fontSize="small"
-                            />
+                            <CategoryIcon fontSize="small" />
 
                             Categories
 
                         </Link>
 
 
-                        {/* ========================= */}
                         {/* USERS */}
-                        {/* ========================= */}
 
                         <Link
                             to="/admin/users"
                             style={{
-                                color: 'white',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
                             }}
                         >
 
-                            <PeopleIcon
-                                fontSize="small"
-                            />
+                            <PeopleIcon fontSize="small" />
 
                             Users
 
                         </Link>
 
 
-                        {/* ========================= */}
                         {/* ORDERS */}
-                        {/* ========================= */}
 
                         <Link
                             to="/admin/orders"
                             style={{
-                                color: 'white',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px'
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
                             }}
                         >
 
-                            <ShoppingBagIcon
-                                fontSize="small"
-                            />
+                            <ShoppingBagIcon fontSize="small" />
 
                             Orders
+
+                        </Link>
+
+
+                        {/* CONTACTS */}
+
+                        <Link
+                            to="/admin/contacts"
+                            style={{
+                                color: "white",
+                                textDecoration: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px"
+                            }}
+                        >
+
+                            <ContactMailIcon fontSize="small" />
+
+                            Contacts
 
                         </Link>
 
@@ -290,41 +287,31 @@ function AdminTopbar() {
 
 
                     {/* ========================= */}
-                    {/* ADMIN SEARCH */}
+                    {/* SEARCH */}
                     {/* ========================= */}
 
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                        }}
-                    >
+                    <TextField
+                        type="text"
+                        value={search}
+                        onChange={(e) =>
+                            setSearch(e.target.value)
+                        }
+                        onKeyDown={(e) => {
 
-                        <TextField
-                            type="text"
-                            value={search}
-                            onChange={(e) =>
-                                setSearch(e.target.value)
+                            if (e.key === "Enter") {
+                                handleSearch();
                             }
-                            onKeyDown={(e) => {
 
-                                if (e.key === "Enter") {
-                                    handleSearch();
-                                }
-
-                            }}
-                            placeholder="Search Products"
-                            size="small"
-                            variant="outlined"
-                            sx={{
-                                backgroundColor: "white",
-                                borderRadius: 1,
-                                width: "220px",
-                            }}
-                        />
-
-                    </Box>
+                        }}
+                        placeholder="Search Products"
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                            backgroundColor: "white",
+                            borderRadius: 1,
+                            width: "220px"
+                        }}
+                    />
 
 
                     {/* ========================= */}
@@ -344,12 +331,12 @@ function AdminTopbar() {
                                 sx={{
                                     width: 35,
                                     height: 35,
-                                    bgcolor: 'white',
-                                    color: 'primary.main'
+                                    bgcolor: "white",
+                                    color: "primary.main"
                                 }}
                             >
 
-                                <Person />
+                                <PersonIcon />
 
                             </Avatar>
 
@@ -364,25 +351,23 @@ function AdminTopbar() {
 
                     <Menu
                         sx={{
-                            mt: '45px'
+                            mt: "45px"
                         }}
                         anchorEl={anchorElUser}
                         anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
+                            vertical: "top",
+                            horizontal: "right"
                         }}
                         transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right'
+                            vertical: "top",
+                            horizontal: "right"
                         }}
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
 
 
-                        {/* ========================= */}
                         {/* PROFILE */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -390,14 +375,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <PersonIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Profile
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* ACCOUNT */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -405,14 +393,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <PersonIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Account
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* ADMIN DASHBOARD */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -420,14 +411,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <DashboardIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Admin Dashboard
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* MANAGE USERS */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -435,14 +429,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <PeopleIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Manage Users
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* MANAGE PRODUCTS */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -450,14 +447,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <Inventory2Icon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Manage Products
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* MANAGE CATEGORIES */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -465,14 +465,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <CategoryIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Manage Categories
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* MANAGE ORDERS */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -480,14 +483,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <ShoppingBagIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Manage Orders
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* MANAGE CONTACTS */}
-                        {/* ========================= */}
 
                         <MenuItem
                             component={Link}
@@ -495,14 +501,17 @@ function AdminTopbar() {
                             onClick={handleCloseUserMenu}
                         >
 
+                            <ContactMailIcon
+                                fontSize="small"
+                                sx={{ mr: 1 }}
+                            />
+
                             Manage Contacts
 
                         </MenuItem>
 
 
-                        {/* ========================= */}
                         {/* LOGOUT */}
-                        {/* ========================= */}
 
                         <MenuItem
                             onClick={handleLogout}
@@ -515,7 +524,6 @@ function AdminTopbar() {
 
                     </Menu>
 
-
                 </Toolbar>
 
             </Container>
@@ -523,8 +531,8 @@ function AdminTopbar() {
         </AppBar>
 
     );
-
 }
 
 
 export default AdminTopbar;
+

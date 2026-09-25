@@ -37,6 +37,7 @@ import AdminCategory from "./Pages/AdminCategory";
 import AdminUsers from "./Pages/AdminUsers";
 import AdminContacts from "./Pages/AdminContacts";
 import AdminOrders from "./Pages/AdminOrders";
+import ResetPassword from "./Component/ResetPassword";
 
 
 function App() {
@@ -188,6 +189,11 @@ function App() {
           <Route
             path="/admin/orders"
             element={<AdminOrders />}
+          />
+
+          <Route
+            path="/resetpassword"
+            element={<ResetPassword />}
           />
 
         </Route>

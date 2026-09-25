@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
+
 import axios from "axios";
 
 import {
@@ -11,7 +15,6 @@ import {
   InputAdornment,
   TextField,
   Typography,
-  Stack,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -19,70 +22,102 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import Topbar from "../Component/Topbar";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
+
 
 interface Category {
+
   categoryId?: number;
+
   name: string;
+
   description: string;
+
   image_ids?: string;
+
   created_at?: string;
+
   updated_at?: string;
 }
 
-const API_URL = "http://localhost:8080/ecomapp/category";
+
+const API_URL =
+  "http://localhost:8080/ecomapp/category";
+
+
+const IMAGE_BASE_URL =
+  "http://localhost:8080/ecomapp/images";
+
 
 const Categories: React.FC = () => {
 
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
+
 
   const [categories, setCategories] =
     useState<Category[]>([]);
 
-  const [search, setSearch] = useState("");
+
+  const [search, setSearch] =
+    useState("");
+
 
   const [loading, setLoading] =
     useState(false);
+
 
   // =========================
   // GET ALL CATEGORIES
   // =========================
 
-  const getCategories = async () => {
+  const getCategories =
+    async () => {
 
-    try {
+      try {
 
-      setLoading(true);
+        setLoading(true);
 
-      const token =
-        localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${API_URL}/all`,
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`,
-          },
-        }
-      );
+        const token =
+          localStorage.getItem(
+            "token"
+          );
 
-      setCategories(response.data);
 
-    } catch (error) {
+        const response =
+          await axios.get(
+            `${API_URL}/all`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
 
-      console.error(
-        "Error fetching categories:",
-        error
-      );
 
-    } finally {
+        setCategories(
+          response.data
+        );
 
-      setLoading(false);
 
-    }
+      } catch (error) {
 
-  };
+        console.error(
+          "Error fetching categories:",
+          error
+        );
+
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
 
 
   // =========================
@@ -101,123 +136,177 @@ const Categories: React.FC = () => {
   // =========================
 
   const filteredCategories =
-    categories.filter((category) => {
+    categories.filter(
+      (category) => {
 
-      const searchText =
-        search.toLowerCase();
+        const searchText =
+          search
+            .trim()
+            .toLowerCase();
 
-      return (
-        category.name
+
+        return category.name
           ?.toLowerCase()
-          .includes(searchText) ||
-
-        category.description
-          ?.toLowerCase()
-          .includes(searchText)
-      );
-
-    });
+          .includes(
+            searchText
+          );
+      }
+    );
 
 
   // =========================
   // VIEW PRODUCTS
   // =========================
 
-  const handleViewProducts = (
-    categoryId?: number
-  ) => {
+  const handleViewProducts =
+    (
+      categoryId?: number
+    ) => {
 
-    if (!categoryId) {
-      return;
-    }
-
-    navigate(
-      `/products?category=${categoryId}`
-    );
-
-  };
+      if (!categoryId) {
+        return;
+      }
 
 
-  // =========================
-  // JSX
-  // =========================
+      navigate(
+        `/products?category=${categoryId}`
+      );
+    };
+
 
   return (
 
     <>
 
+      {/* ========================= */}
       {/* USER TOPBAR */}
+      {/* ========================= */}
 
       <Topbar
+
         pages={[
+
           {
-            menuItem: "Products",
-            link: "/products",
+            menuItem:
+              "Products",
+
+            link:
+              "/products",
           },
+
           {
-            menuItem: "Categories",
-            link: "/categories",
+            menuItem:
+              "Categories",
+
+            link:
+              "/categories",
           },
+
           {
-            menuItem: "Contact Us",
-            link: "/ContactUs",
+            menuItem:
+              "Contact Us",
+
+            link:
+              "/ContactUs",
           },
+
         ]}
+
+
         settings={[
+
           {
-            settingitem: "Profile",
-            settinglink: "/profile",
+            settingitem:
+              "Profile",
+
+            settinglink:
+              "/profile",
           },
+
           {
-            settingitem: "Account",
-            settinglink: "/Account",
+            settingitem:
+              "Account",
+
+            settinglink:
+              "/Account",
           },
+
           {
-            settingitem: "Dashboard",
-            settinglink: "/Dashboard",
+            settingitem:
+              "Dashboard",
+
+            settinglink:
+              "/Dashboard",
           },
+
           {
-            settingitem: "Logout",
-            settinglink: "/Logout",
+            settingitem:
+              "Logout",
+
+            settinglink:
+              "/Logout",
           },
+
         ]}
+
       />
 
 
+      {/* ========================= */}
       {/* MAIN CONTAINER */}
+      {/* ========================= */}
 
       <Container
+
         maxWidth="lg"
+
         sx={{
           pt: 12,
           pb: 6,
         }}
+
       >
+
 
         {/* ========================= */}
         {/* PAGE HEADER */}
         {/* ========================= */}
 
-        <Box sx={{ mb: 4 }}>
+        <Box
+          sx={{
+            mb: 4,
+          }}
+        >
 
           <Typography
+
             variant="h4"
+
             sx={{
               fontWeight: 700,
               mb: 1,
             }}
+
           >
             Categories
+
           </Typography>
 
+
           <Typography
+
             variant="body1"
+
             sx={{
-              color: "text.secondary",
+              color:
+                "text.secondary",
             }}
+
           >
-            Browse products by category
-            and find what you need.
+            Browse products by
+            category and find
+            what you need.
+
           </Typography>
 
         </Box>
@@ -228,27 +317,43 @@ const Categories: React.FC = () => {
         {/* ========================= */}
 
         <TextField
+
           fullWidth
+
           placeholder="Search category..."
+
           value={search}
+
           onChange={(e) =>
-            setSearch(e.target.value)
+            setSearch(
+              e.target.value
+            )
           }
+
           sx={{
             mb: 4,
             maxWidth: 600,
           }}
+
           slotProps={{
             input: {
+
               startAdornment: (
-                <InputAdornment position="start">
+
+                <InputAdornment
+                  position="start"
+                >
+
                   <SearchIcon
                     color="action"
                   />
+
                 </InputAdornment>
+
               ),
             },
           }}
+
         />
 
 
@@ -259,13 +364,18 @@ const Categories: React.FC = () => {
         {loading && (
 
           <Typography
+
             align="center"
+
             sx={{
               py: 8,
-              color: "text.secondary",
+              color:
+                "text.secondary",
             }}
+
           >
             Loading categories...
+
           </Typography>
 
         )}
@@ -276,33 +386,41 @@ const Categories: React.FC = () => {
         {/* ========================= */}
 
         {!loading &&
-          filteredCategories.length === 0 && (
+          filteredCategories.length ===
+            0 && (
 
             <Card
               sx={{
                 p: 5,
-                textAlign: "center",
+                textAlign:
+                  "center",
               }}
             >
 
               <Typography
+
                 variant="h6"
+
                 sx={{
                   fontWeight: 600,
                   mb: 1,
                 }}
+
               >
                 No categories found
+
               </Typography>
+
 
               <Typography
                 color="text.secondary"
               >
-                Try another category name.
+                Try another category
+                name.
+
               </Typography>
 
             </Card>
-
           )}
 
 
@@ -311,55 +429,84 @@ const Categories: React.FC = () => {
         {/* ========================= */}
 
         {!loading &&
-          filteredCategories.length > 0 && (
+          filteredCategories.length >
+            0 && (
 
             <Box
+
               sx={{
-                display: "grid",
+
+                display:
+                  "grid",
 
                 gridTemplateColumns: {
+
                   xs: "1fr",
-                  sm: "repeat(2, 1fr)",
-                  md: "repeat(3, 1fr)",
-                  lg: "repeat(4, 1fr)",
+
+                  sm:
+                    "repeat(2, 1fr)",
+
+                  md:
+                    "repeat(3, 1fr)",
+
+                  lg:
+                    "repeat(4, 1fr)",
+
                 },
 
                 gap: 3,
+
               }}
+
             >
+
 
               {filteredCategories.map(
                 (category) => (
 
                   <Card
+
                     key={
                       category.categoryId
                     }
-                    sx={{
-                      height: "100%",
 
-                      display: "flex",
+                    sx={{
+
+                      height:
+                        "100%",
+
+                      display:
+                        "flex",
 
                       flexDirection:
                         "column",
 
-                      borderRadius: 3,
+                      borderRadius:
+                        3,
 
-                      overflow: "hidden",
+                      overflow:
+                        "hidden",
 
-                      boxShadow: 2,
+                      boxShadow:
+                        2,
 
                       transition:
                         "all 0.3s ease",
 
                       "&:hover": {
+
                         transform:
                           "translateY(-5px)",
 
-                        boxShadow: 6,
+                        boxShadow:
+                          6,
+
                       },
+
                     }}
+
                   >
+
 
                     {/* ========================= */}
                     {/* CATEGORY IMAGE */}
@@ -368,27 +515,36 @@ const Categories: React.FC = () => {
                     {category.image_ids ? (
 
                       <CardMedia
+
                         component="img"
+
                         height="190"
+
                         image={
-                          category.image_ids
+                          `${IMAGE_BASE_URL}/${category.image_ids}`
                         }
+
                         alt={
                           category.name
                         }
+
                         sx={{
                           objectFit:
                             "cover",
                         }}
+
                       />
 
                     ) : (
 
                       <Box
+
                         sx={{
+
                           height: 190,
 
-                          display: "flex",
+                          display:
+                            "flex",
 
                           alignItems:
                             "center",
@@ -398,7 +554,9 @@ const Categories: React.FC = () => {
 
                           backgroundColor:
                             "#f1f5f9",
+
                         }}
+
                       >
 
                         <Typography
@@ -417,48 +575,72 @@ const Categories: React.FC = () => {
                     {/* ========================= */}
 
                     <CardContent
+
                       sx={{
+
                         flexGrow: 1,
 
-                        display: "flex",
+                        display:
+                          "flex",
 
                         flexDirection:
                           "column",
+
                       }}
+
                     >
 
                       <Typography
+
                         variant="h6"
+
                         sx={{
-                          fontWeight: 700,
+
+                          fontWeight:
+                            700,
+
                           mb: 1,
+
                         }}
+
                       >
                         {category.name}
+
                       </Typography>
 
 
                       <Typography
+
                         variant="body2"
+
                         color="text.secondary"
+
                         sx={{
+
                           mb: 3,
 
                           display:
                             "-webkit-box",
 
-                          WebkitLineClamp: 3,
+                          WebkitLineClamp:
+                            3,
 
                           WebkitBoxOrient:
                             "vertical",
 
-                          overflow: "hidden",
+                          overflow:
+                            "hidden",
 
-                          minHeight: 60,
+                          minHeight:
+                            60,
+
                         }}
+
                       >
+
                         {category.description ||
                           "Explore products from this category."}
+
                       </Typography>
 
 
@@ -473,26 +655,38 @@ const Categories: React.FC = () => {
                       >
 
                         <Button
+
                           fullWidth
+
                           variant="contained"
+
                           endIcon={
                             <ArrowForwardIcon />
                           }
+
                           onClick={() =>
                             handleViewProducts(
                               category.categoryId
                             )
                           }
+
                           sx={{
-                            borderRadius: 2,
+
+                            borderRadius:
+                              2,
 
                             textTransform:
                               "none",
 
-                            fontWeight: 600,
+                            fontWeight:
+                              600,
+
                           }}
+
                         >
+
                           View Products
+
                         </Button>
 
                       </Box>
@@ -511,7 +705,6 @@ const Categories: React.FC = () => {
       </Container>
 
     </>
-
   );
 };
 
